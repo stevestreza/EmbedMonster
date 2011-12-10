@@ -3,6 +3,9 @@
 	<head>
 		<title>Test EmbedMonster</title>
 
+		<script src="../vendor/swfobject.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../vendor/soundcloud.player.api.js" type="text/javascript" charset="utf-8"></script>
+
 		<script src="../lib/EmbedMonster.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../lib/EmbedSource.js" type="text/javascript" charset="utf-8"></script>
 
@@ -15,44 +18,111 @@
 		
 		<script type="text/javascript" charset="utf-8">
 		function openTestVideos(){
-			var data = {
-				youtube:    "http://www.youtube.com/watch?v=7t7I6DTny6A",
-//				vimeo:      "http://vimeo.com/30000557",
-//				soundcloud: "http://soundcloud.com/excision/excision-datsik-swagga",
-//				audio:      "./testaudiotag.mp3",
-//				video:      "./testvideotag.mp4"
+			var data = [
+				{
+					site: "youtube",
+					url:  "http://www.youtube.com/watch?v=7t7I6DTny6A"
+				},
+				{
+					site: "vimeo",
+					url:  "http://vimeo.com/30000557"
+				},
+				{
+					site: "soundcloud",
+					url:  "http://soundcloud.com/tibocut/fridayfolly-ringtone1"
+				},
+				{
+					site: "audio",
+					url:  "./testaudiotag.mp3"
+				},
+				{
+					site: "video",
+					url:  "./testvideotag.mp4"
+				},
+			];
+			
+			window.currentSource = null;
+			
+			function secondsToTimeString(seconds){
+				var hours = Math.floor(seconds > 3600 ? seconds / 3600 : 0);
+				var minutes = Math.floor((seconds - (hours * 3600)) / 60);
+				var seconds = Math.floor((seconds - (hours * 3600) - (minutes * 60)));
+				
+				var pieces = [];
+				if(hours > 0){
+					pieces.push("" + hours);
+					pieces.push(":");
+				}
+				
+				if(minutes < 10 && pieces.length > 0){
+					pieces.push("0");
+				}
+
+				pieces.push("" + minutes);
+				pieces.push(":");
+				
+				if(seconds < 10){
+					pieces.push("0");
+				}
+				pieces.push("" + seconds);
+				
+				return pieces.join("");
 			};
 			
-			for(var site in data){
+			var idx = -1;
+			var next = function(){
+				idx++;
+				var item = data[idx];
+				var site = item.site;
+				var url  = item.url;
+
 				var element = document.querySelectorAll("#" + site + " .player");
 				if(element && element.length > 0){
 					element = element[0];
-					var url = data[site];
-
 					// process url
 					console.log("Processing URL " + url + " for site " + site + " - ", element);
 					EmbedMonster.load(url, element, function(err, source){
 						if(!err){
+							window.currentSource = source;
 							source.play();
 							source.onUpdateState = function(state){
-								console.log("State updated " + source.isPlaying(), JSON.stringify(state));
+//								console.log("State updated " + source.isPlaying(), JSON.stringify(state));
+								var duration = document.querySelectorAll("#duration")[0];
+								duration.innerText = secondsToTimeString(state.currentTime) + " / " + secondsToTimeString(state.duration);
+
+								var maxWidth = 500;
+								var progressBarLoaded = document.querySelectorAll("#progressBarLoaded")[0];
+								progressBarLoaded.style.width = "" + (state.percentLoaded * maxWidth) + "px";
+
+								var progressBarStatus = document.querySelectorAll("#progressBarStatus")[0];
+								progressBarStatus.style.width = "" + (state.percentTime * maxWidth) + "px";
 							};
-							
-							setTimeout(function(){
-								source.pause();
-							}, 1500);
-							
-							setTimeout(function(){
-								source.play();
-							}, 4500);
+							source.onTrackFinished = function(){
+								document.querySelectorAll("#" + site)[0].style.backgroundColor = "green";
+								next();
+							}
+						}else{
+							console.log("Could not load " + url + " for " + site + ": ", err);
+							document.querySelectorAll("#" + site)[0].style.backgroundColor = "red";
+							next();
 						}
 					});
 				}
-			}
+			};
+			
+			next();
 		}
 		</script>
 	</head>
 	<body onload="openTestVideos()">
+		<div id="controller" style="width: 100%; height: 30px; margin-bottom: 20px;">
+			<div id="playPause" style="width: 100px; height: 30px; float:left;" onclick="if(window.currentSource){ window.currentSource.playPause(); }">Play/Pause</div>
+			<div id="progressBar" style="width: 500px; height: 30px; background-color: gray; float: left; position: relative;">
+				<div id="progressBarLoaded" style="width: 0px; height: 30px; background-color: yellow; position: absolute; top: 0px; left:0px;"></div>
+				<div id="progressBarStatus" style="width: 0px; height: 30px; background-color: orange; position: absolute; top: 0px; left:0px;"></div>
+			</div>
+			<div id="duration" style="width: 100px; height: 30px; float: right">0:00/5:30</div>
+		</div>
 		<div id="youtube">
 			<div class="title">YouTube</div>
 			<div class="player"></div>

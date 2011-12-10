@@ -4,6 +4,13 @@ EmbedMonster
 Sources
 =======
 
+* YouTube
+* Vimeo
+* Netflix
+* SoundCloud
+* AudioTag
+* VideoTag
+
 Setup
 =====
 
