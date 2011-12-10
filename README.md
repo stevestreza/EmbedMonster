@@ -15,7 +15,7 @@ Features
 Sources
 =======
 
-Sources are EmbedMonster's idea of ways of accessing audio and video. A Source represents one service, such as YouTube or SoundCloud, 
+Sources are EmbedMonster's idea of ways of accessing audio and video. A Source represents one service, such as YouTube or SoundCloud.
 
 * YouTube
 * SoundCloud
@@ -25,6 +25,13 @@ Sources are EmbedMonster's idea of ways of accessing audio and video. A Source r
 * VideoTag *unimplemented*
 
 To create a new Source, add a new file to lib/sources, create it as seen in other Source plugins, and implement the methods at the bottom of EmbedSource.js, and the code necessary to load the player into the DOM element.
+
+Running the Test
+================
+
+Due to plugin restrictions for security, you can't load most Flash objects through file:/// URLs. You have to load them through a web server. So toss them behind nginx or Apache or something before trying to run the tests.
+
+Once you have this running, you should see a super-ugly page with placeholders for Sources. The test page will iterate through a piece of media for each Source. See the Sources section for available Sources. Sources which are playable will attempt to play, one at a time, in order. When the track finishes, the next track will begin. When a track is successfully played through, its background will turn green; if it failed, it will turn red. There is also a global controller at the top of the screen, which shows the loaded/playback progress (no scrubbing yet!), a timer with duration, and a play/pause button. The test.html file itself shows basic usage of the APIs.
 
 Setup
 =====
