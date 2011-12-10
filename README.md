@@ -53,15 +53,15 @@ This will attempt to find a Source capable of playing the content at `url`. It w
 
 Once you have a Source object returned, you can call these APIs on it:
 
-* play() - starts playing
-* pause() - pauses the media
-* playPause() - if the media is playing, pause it; otherwise, play it.
-* isPlaying() - returns true if the media is playing, false otherwise
+* `play()` - starts playing
+* `pause()` - pauses the media
+* `playPause()` - if the media is playing, pause it; otherwise, play it.
+* `isPlaying()` - returns true if the media is playing, false otherwise
 
 You can also add listeners for these events:
 
-* onUpdateState - notifies when the player state changes. It gets supplied an object containing metadata about the state of the player. This can get called very frequently, so make sure your use here is minimal!
-* onTrackFinished - notifies when the player finishes playing.
+* `onUpdateState` - notifies when the player state changes. It gets supplied an object containing metadata about the state of the player. This can get called very frequently, so make sure your use here is minimal!
+* `onTrackFinished` - notifies when the player finishes playing.
 
 Contributors
 ============
