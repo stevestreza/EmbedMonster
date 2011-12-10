@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test EmbedMonster</title>
+
+		<script src="../lib/EmbedMonster.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../lib/EmbedSource.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src="../lib/sources/YouTube.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../lib/sources/Vimeo.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../lib/sources/SoundCloud.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src="../lib/sources/AudioTag.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../lib/sources/VideoTag.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+		function openTestVideos(){
+			var data = {
+				youtube:    "http://www.youtube.com/watch?v=7t7I6DTny6A",
+//				vimeo:      "http://vimeo.com/30000557",
+//				soundcloud: "http://soundcloud.com/excision/excision-datsik-swagga",
+//				audio:      "./testaudiotag.mp3",
+//				video:      "./testvideotag.mp4"
+			};
+			
+			for(var site in data){
+				var element = document.querySelectorAll("#" + site + " .player");
+				if(element && element.length > 0){
+					element = element[0];
+					var url = data[site];
+
+					// process url
+					console.log("Processing URL " + url + " for site " + site + " - ", element);
+					EmbedMonster.load(url, element, function(err, source){
+						if(!err){
+							source.play();
+							source.onUpdateState = function(state){
+								console.log("State updated " + source.isPlaying(), JSON.stringify(state));
+							};
+							
+							setTimeout(function(){
+								source.pause();
+							}, 1500);
+							
+							setTimeout(function(){
+								source.play();
+							}, 4500);
+						}
+					});
+				}
+			}
+		}
+		</script>
+	</head>
+	<body onload="openTestVideos()">
+		<div id="youtube">
+			<div class="title">YouTube</div>
+			<div class="player"></div>
+		</div>
+		<div id="vimeo">
+			<div class="title">Vimeo</div>
+			<div class="player"></div>
+		</div>
+		<div id="soundcloud">
+			<div class="title">SoundCloud</div>
+			<div class="player"></div>
+		</div>
+		<div id="audio">
+			<div class="title">&lt;audio&gt;</div>
+			<div class="player"></div>
+		</div>
+		<div id="video">
+			<div class="title">&lt;video&gt;</div>
+			<div class="player"></div>
+		</div>
+	</body>
+</html>
