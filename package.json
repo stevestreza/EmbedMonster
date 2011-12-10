@@ -7,9 +7,6 @@
     "type": "git",
     "url": "git://github.com/amazingsyco/EmbedMonster.git"
   },
-  "engines": {
-    "node": "~v0.4.10"
-  },
   "dependencies": {},
   "devDependencies": {}
 }
