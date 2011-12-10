@@ -1,0 +1,15 @@
+{
+  "author": "Steve Streza (https://twitter.com/SteveStreza)",
+  "name": "EmbedMonster",
+  "description": "Universal audio/video controller API for embeddable media",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/amazingsyco/EmbedMonster.git"
+  },
+  "engines": {
+    "node": "~v0.4.10"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
