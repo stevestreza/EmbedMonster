@@ -5,6 +5,84 @@
 
   <title>EmbedMonster</title>
 
+	<script src="EmbedMonster/vendor/swfobject.js" type="text/javascript" charset="utf-8"></script>
+	<script src="EmbedMonster/vendor/soundcloud.player.api.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="EmbedMonster/lib/EmbedMonster.js" type="text/javascript" charset="utf-8"></script>
+	<script src="EmbedMonster/lib/EmbedSource.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="EmbedMonster/lib/sources/YouTube.js" type="text/javascript" charset="utf-8"></script>
+	<script src="EmbedMonster/lib/sources/Vimeo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="EmbedMonster/lib/sources/SoundCloud.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="EmbedMonster/lib/sources/AudioTag.js" type="text/javascript" charset="utf-8"></script>
+	<script src="EmbedMonster/lib/sources/VideoTag.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script type="text/javascript" charset="utf-8">
+		$(function(){
+			$("#demoSources a").click(function(e){
+				e.preventDefault();
+
+				var $this = $(this);
+				var url = $this.attr("href");
+				
+				window.currentSource = null;
+				EmbedMonster.load(url, $("#player")[0], function(err, media){
+					if(!err){
+						window.currentSource = media;
+						media.play();
+						
+						media.onUpdateState = function(state){
+//							console.log("State updated " + source.isPlaying(), JSON.stringify(state));
+							var duration = $("#duration");
+							duration.text(secondsToTimeString(state.currentTime) + " / " + secondsToTimeString(state.duration));
+                        
+							var maxWidth = 500;
+							var progressBarLoaded = $("#progressBarLoaded")[0];
+							progressBarLoaded.style.width = "" + (state.percentLoaded * maxWidth) + "px";
+                        
+							var progressBarStatus = $("#progressBarStatus")[0];
+							progressBarStatus.style.width = "" + (state.percentTime * maxWidth) + "px";
+							
+							$("#playPause").text(media.isPlaying() ? "Pause" : "Play");
+						};
+
+					}
+				});
+				
+				return false;
+			});
+		});
+		
+		function secondsToTimeString(seconds){
+			var hours = Math.floor(seconds > 3600 ? seconds / 3600 : 0);
+			var minutes = Math.floor((seconds - (hours * 3600)) / 60);
+			var seconds = Math.floor((seconds - (hours * 3600) - (minutes * 60)));
+			
+			var pieces = [];
+			if(hours > 0){
+				pieces.push("" + hours);
+				pieces.push(":");
+			}
+			
+			if(minutes < 10 && pieces.length > 0){
+				pieces.push("0");
+			}
+
+			pieces.push("" + minutes);
+			pieces.push(":");
+			
+			if(seconds < 10){
+				pieces.push("0");
+			}
+			pieces.push("" + seconds);
+			
+			return pieces.join("");
+		};
+	</script>
+
   <style type="text/css">
     body {
       margin-top: 1.0em;
@@ -27,6 +105,12 @@
     pre { background: #000; color: #fff; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
+
+	#player{
+		width: 700px;
+		height: 400px;
+		background-color: black;
+	}
   </style>
 </head>
 
@@ -46,8 +130,25 @@
       <span class="small">by <a href="https://github.com/amazingsyco">Steve Streza</a></span></h1>
 
     <div class="description">
-      EmbedMonster is a JavaScript microframework for controlling embeddable media on the web. Whether you're hosting the media yourself, or taking it from a source such as YouTube, you can use one easy and consistent JavaScript API to load and control embeddable media. It has a plugin-based architecture, letting developers implement new sources or prune unneeded sources from apps they build. The purpose of this project is to enable developers to build web applications that make great use of audio/video media, whether hosted on their own server, or provided through a third party service.
+      EmbedMonster is a JavaScript microframework for controlling embeddable media on the web. Whether you're hosting the media yourself, or taking it from a source such as YouTube, you can use one easy and consistent JavaScript API to load and control embeddable media. It has a plugin-based architecture, letting developers implement new sources or prune unneeded sources from apps they build. The purpose of this project is to enable developers to build web applications that make great use of audio/video media, whether hosted on their own server, or provided through a third party service. <strong>Still in active development, not ready for use quite yet.</strong>
     </div>
+
+	<h2>Demo</h2>
+	<div id="demo">
+		<div id='player'></div>
+		<div id='playbackControls' style="background-color: #eee; padding: 0px; margin: 0px; padding-bottom: 1em;">
+			<div id="playPause" style="width: 100px; height: 20px; float:left;" onclick="if(window.currentSource){ window.currentSource.playPause(); }">Play/Pause</div>
+			<div id="progressBar" style="width: 500px; height: 20px; background-color: gray; float: left; position: relative;">
+				<div id="progressBarLoaded" style="width: 0px; height: 20px; background-color: yellow; position: absolute; top: 0px; left:0px;"></div>
+				<div id="progressBarStatus" style="width: 0px; height: 20px; background-color: orange; position: absolute; top: 0px; left:0px;"></div>
+			</div>
+			<div id="duration" style="width: 100px; height: 20px; float: right; text-align: right;">0:00/0:00</div>
+		</div>
+		<div id="demoSources" style="text-align: center">
+			<a href="http://www.youtube.com/watch?v=bEsvYrw-sMQ">Try YouTube</a> |
+			<a href="http://soundcloud.com/tibocut/fridayfolly-ringtone1">Try SoundCloud</a>
+		</div>
+	</div>
 
 	<h2>Features</h2>
 	<ul>

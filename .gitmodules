@@ -1,0 +1,3 @@
+[submodule "EmbedMonster"]
+	path = EmbedMonster
+	url = git://github.com/amazingsyco/EmbedMonster.git
